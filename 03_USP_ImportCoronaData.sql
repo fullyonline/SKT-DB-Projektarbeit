@@ -13,6 +13,12 @@
 
 EXEC dbo.uspImportCoronaData @CsvPath = 'D:\Serioese_Projekte\Juventus\SKT-DB-Projektarbeit\file.csv'
 
+SELECT * FROM CoronaDaten
+SELECT * FROM Kanton
+
+DELETE CoronaDaten
+DELETE Kanton
+
 */
 
 DROP PROCEDURE uspImportCoronaData
@@ -66,9 +72,9 @@ BEGIN
 	FETCH NEXT FROM curData INTO @Date, @CantonShort, @Testet, @Positiv, @NeuHospitalisiert, @Hospitalisiert, @AufIps, @MitBeatmung, @Verstorben, @Isoliert, @InQuarantaene;
 	WHILE @@FETCH_STATUS = 0
 	BEGIN
-
-		-- TODO: Work
-
+		-- Work
+		EXEC dbo.uspInsertCoronaData @Date, @CantonShort, @Testet, @Positiv, @NeuHospitalisiert, @Hospitalisiert, @AufIps, @MitBeatmung, @Verstorben, @Isoliert, @InQuarantaene;
+		-- Next
 		FETCH NEXT FROM curData INTO @Date, @CantonShort, @Testet, @Positiv, @NeuHospitalisiert, @Hospitalisiert, @AufIps, @MitBeatmung, @Verstorben, @Isoliert, @InQuarantaene;
 	END
 	CLOSE curData;
