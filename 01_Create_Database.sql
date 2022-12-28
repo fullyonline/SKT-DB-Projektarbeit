@@ -46,6 +46,7 @@ create table CoronaDaten
 (
 	CoronaDatenID 			int 	not null identity(1,1),
     KantonID				int		not null,
+    Datum					date	not null,
 	Getestet				int		null, -- ncumul_tested
 	Positiv					int		null, -- ncumul_conf
 	NeuHospitalisiert		int		null, -- new_hosp
