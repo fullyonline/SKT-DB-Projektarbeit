@@ -47,6 +47,7 @@ BEGIN
 		WHEN @ShortName = 'NE' THEN 'Neuenburg'
 		WHEN @ShortName = 'GE' THEN 'Genf'
 		WHEN @ShortName = 'JU' THEN 'Jura'
+		WHEN @ShortName = 'FL' THEN 'Fürstentum Liechtenstein'
 	END
 END
 GO
