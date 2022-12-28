@@ -21,6 +21,11 @@ create database Corona;
 go
 use Corona;
 
+--
+-- Tabellen
+--
+
+
 /*
 -- Kanton
 */
@@ -29,6 +34,7 @@ create table Kanton
 (
 	KantonID 	int 			not null identity(1,1),
     Bezeichnung	varchar(100)	not null,
+    Kurzzeichen	varchar(3)	    not null,
     constraint pk_kanton primary key (KantonID)
 );
 
@@ -43,9 +49,9 @@ create table CoronaDaten
 	Getestet				int		null, -- ncumul_tested
 	Positiv					int		null, -- ncumul_conf
 	NeuHospitalisiert		int		null, -- new_hosp
-	AktuellHospitalisiert	int		null, -- current_hosp
-	AktuellAufIPS			int		null, -- current_icu
-	AktuellMitBeatmung		int		null, -- current_vent
+	Hospitalisiert			int		null, -- current_hosp
+	AufIPS					int		null, -- current_icu
+	MitBeatmung				int		null, -- current_vent
 	Verstorben				int		null, -- ncumul_deceased
 	Isoliert				int		null, -- current_isolated
 	InQuarantaene			int		null, -- current_quarantined_total
@@ -54,7 +60,7 @@ create table CoronaDaten
 
 
 --
--- foreign key constraints erstellen
+-- Foreign key constraints
 --
 
 alter table CoronaDaten
