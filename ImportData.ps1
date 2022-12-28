@@ -11,3 +11,5 @@ $Sql = "EXEC dbo.uspImportCoronaData @CsvPath = '" + $PWD + "\" + $File + "'"
 
 Invoke-Sqlcmd -ServerInstance $Server -Database $Database -Query $Sql | Out-Null
 
+# Lesen mit dediziertem User von View --> nur Read rechte
+
