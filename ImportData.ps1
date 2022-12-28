@@ -1,3 +1,13 @@
-Invoke-WebRequest https://raw.githubusercontent.com/openZH/covid_19/master/COVID19_Fallzahlen_CH_total_v2.csv -OutFile file.csv
+$Server = 'DESKTOP-VUM307Q\SQLEXPRESS'
+$Database = 'Corona'
+$File = 'file.csv'
 
-#Datenmanipulation und in DB einlesen
+
+#Invoke-WebRequest https://raw.githubusercontent.com/openZH/covid_19/master/COVID19_Fallzahlen_CH_total_v2.csv -OutFile $File
+
+# Import Anstossen 
+# TODO: dedizierter User mit Write-Rechten
+$Sql = "EXEC dbo.uspImportCoronaData @CsvPath = '" + $PWD + "\" + $File + "'"
+
+Invoke-Sqlcmd -ServerInstance $Server -Database $Database -Query $Sql | Out-Null
+
