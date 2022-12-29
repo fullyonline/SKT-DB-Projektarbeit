@@ -1,4 +1,4 @@
--- 05_USP_GetOrCreateCanton.sql
+-- 04_USP_GetOrCreateCanton.sql
 --
 -- Autor		: Roman Inglin, Romano Sabbatella
 -- Projekt		: Projektarbeit Datenbank 2 - Juventus
@@ -34,9 +34,8 @@ BEGIN
 	SELECT @CantonID = KantonID FROM Kanton WHERE Kurzzeichen = @CantonShort;
 	IF @CantonID is null
 	BEGIN
-		EXEC dbo.CreateCanton @CantonShort, @NewID = @CantonID output
+		INSERT Kanton (Bezeichnung, Kurzzeichen) VALUES (dbo.ufnGetCantonNameByShortName(@CantonShort), @CantonShort);
+		SET @CantonID = SCOPE_IDENTITY();		
 	END
-
-
 END
 GO
