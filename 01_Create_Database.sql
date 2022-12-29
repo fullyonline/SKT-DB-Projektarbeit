@@ -45,6 +45,7 @@ create table AttributTyp
 (
 	AttributTypID 	int 			not null identity(1,1),
     AttributTyp		varchar(100)	not null,
+    Bezeichnung		varchar(200)	not null,
     constraint pk_attributtyp primary key (AttributTypID)
 );
 
@@ -56,21 +57,9 @@ create table Attribut
 (
 	AttributID 		int		not null identity(1,1),
 	AttributTypID 	int		not null,
+	DatumID			int		not null,
     Wert			int		not null,
     constraint pk_attribut primary key (AttributID)
-);
-
-/*
--- AttributCoronaDaten
-*/
-
-create table AttributCoronaDaten
-(
-	AttributCoronaDatenID 	int		not null identity(1,1),
-	AttributID 				int		not null,
-	CoronaDatenID 			int		not null,
-	DatumID					int		not null,
-    constraint pk_attributcoronadaten primary key (AttributCoronaDatenID)
 );
 
 /*
@@ -94,15 +83,10 @@ create table CoronaDaten
 	CoronaDatenID 			int 	not null identity(1,1),
     KantonID				int		not null,
     DatumID					int		not null,
-	Getestet				int		null, -- ncumul_tested
 	Positiv					int		null, -- ncumul_conf
-	NeuHospitalisiert		int		null, -- new_hosp
-	Hospitalisiert			int		null, -- current_hosp
-	AufIPS					int		null, -- current_icu
-	MitBeatmung				int		null, -- current_vent
 	Verstorben				int		null, -- ncumul_deceased
 	Isoliert				int		null, -- current_isolated
-	InQuarantaene			int		null, -- current_quarantined_total
+	InQuarantaene			int		null, -- current_quarantined
     constraint pk_coronadaten primary key (CoronaDatenID)
 );
 
@@ -117,14 +101,16 @@ alter table CoronaDaten
 alter table CoronaDaten
 	add constraint fk_coronadaten_datum foreign key (DatumID) references Datum(DatumID);
 
-alter table AttributCoronaDaten
-	add constraint fk_attributcoronadaten_datum foreign key (DatumID) references Datum(DatumID);
-	
-alter table AttributCoronaDaten
-	add constraint fk_attributcoronadaten_coronadaten foreign key (CoronaDatenID) references CoronaDaten(CoronaDatenID);
-	
-alter table AttributCoronaDaten
-	add constraint fk_attributcoronadaten_attribut foreign key (AttributID) references Attribut(AttributID);
+alter table Attribut
+	add constraint fk_attribut_datum foreign key (DatumID) references Datum(DatumID);
 
 alter table Attribut
 	add constraint fk_attribut_attributtyp foreign key (AttributTypID) references AttributTyp(AttributTypID);
+
+--
+-- Unique Constraints
+--
+
+alter table Attribut
+	add constraint uq_attributtyp_datum unique (AttributTypID, DatumID);
+    
