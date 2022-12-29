@@ -14,9 +14,15 @@
 EXEC dbo.uspImportCoronaData @CsvPath = 'D:\Serioese_Projekte\Juventus\SKT-DB-Projektarbeit\file.csv'
 
 SELECT * FROM CoronaDaten
+SELECT * FROM AttributTyp
+SELECT * FROM Attribut
+SELECT * FROM Datum
 SELECT * FROM Kanton
 
 DELETE CoronaDaten
+DELETE AttributTyp
+DELETE Datum
+DELETE Attribut
 DELETE Kanton
 
 */
