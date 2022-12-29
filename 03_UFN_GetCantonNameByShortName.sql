@@ -1,4 +1,4 @@
--- 02_UFN_GetCantonNameByShortName.sql
+-- 03_UFN_GetCantonNameByShortName.sql
 --
 -- Autor		: Roman Inglin, Romano Sabbatella
 -- Projekt		: Projektarbeit Datenbank 2 - Juventus
