@@ -23,17 +23,19 @@ AS
 BEGIN
 	SET NOCOUNT ON;
 	
-	DECLARE @AttributID int;
+	DECLARE @AttributID int, @NeuerWert int;
+
+	SET @NeuerWert = ISNULL(@Wert, 0);
 
 	SELECT @AttributID = AttributID FROM Attribut WHERE AttributTypID = @AttributTypID AND DatumID = @DatumID;
 
 	IF @AttributID IS NULL
 		BEGIN
-			INSERT Attribut (AttributTypID, DatumID, Wert) VALUES (@AttributTypID, @DatumID, ISNULL(@Wert, 0));
+			INSERT Attribut (AttributTypID, DatumID, Wert) VALUES (@AttributTypID, @DatumID, @NeuerWert);
 		END
 	ELSE
 		BEGIN
-			UPDATE Attribut SET Wert = Wert + @Wert WHERE AttributID = @AttributID;
+			UPDATE Attribut SET Wert = Wert + @NeuerWert WHERE AttributID = @AttributID;
 		END
 END
 GO
