@@ -19,10 +19,10 @@ SELECT * FROM Attribut
 SELECT * FROM Datum
 SELECT * FROM Kanton
 
+DELETE Attribut
 DELETE CoronaDaten
 DELETE AttributTyp
 DELETE Datum
-DELETE Attribut
 DELETE Kanton
 
 */
