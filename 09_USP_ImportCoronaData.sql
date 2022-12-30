@@ -66,8 +66,9 @@ BEGIN
 	print 'sql:'
 	print @Sql
 	EXEC (@Sql)
-	SELECT * FROM #TmpTable
 
+	-- Tansaction
+	BEGIN TRANSACTION
 
 	-- Deklarationen
 	DECLARE @Date date, @CantonShort varchar(3), @Testet int, @Positiv int, @NeuHospitalisiert int, @Hospitalisiert int, @AufIps int, @MitBeatmung int, @Verstorben int, @Isoliert int, @InQuarantaene int;
@@ -89,6 +90,9 @@ BEGIN
 	/*
 	-- Cleanup
 	*/
+	-- Transaction
+	COMMIT
+	-- Tmp Table
 	DROP TABLE #TmpTable
 END
 GO
