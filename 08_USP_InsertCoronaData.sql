@@ -69,6 +69,6 @@ BEGIN
 	-- AufIps
 	EXEC dbo.uspCreateOrUpdateAttribute	@DatumID = @DatumID, @AttributTypID = @AufIpsTypID, @Wert = @AufIps
 	-- MitBeatmung
-	EXEC dbo.uspCreateOrUpdateAttribute	@DatumID = @DatumID, @AttributTypID = @TestetTypID, @Wert = @MitBeatmung
+	EXEC dbo.uspCreateOrUpdateAttribute	@DatumID = @DatumID, @AttributTypID = @MitBeatmungTypID, @Wert = @MitBeatmung
 END
 GO
