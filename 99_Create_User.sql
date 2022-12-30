@@ -14,7 +14,15 @@ go
 select * from sys.server_principals
 DELETE sys.server_principals WHERE principal_id = 271;
 
+-- TO KILL a Logged in user:
 
+SELECT conn.session_id, host_name, program_name,
+    nt_domain, login_name, connect_time, last_request_end_time 
+FROM sys.dm_exec_sessions AS sess
+JOIN sys.dm_exec_connections AS conn
+   ON sess.session_id = conn.session_id;
+
+KILL 60
 */
 
 use master
@@ -78,6 +86,6 @@ GO
 -- grants
 
 -- Select Privileg erteilen
-GRANT SELECT ON usvGetCanton TO ScriptingUser;
-GRANT SELECT ON usvGetCantonData TO ScriptingUser;
-GRANT SELECT ON usvGetSwissData TO ScriptingUser;
+GRANT SELECT ON usvGetCanton TO ReadingUser;
+GRANT SELECT ON usvGetCantonData TO ReadingUser;
+GRANT SELECT ON usvGetSwissData TO ReadingUser;
