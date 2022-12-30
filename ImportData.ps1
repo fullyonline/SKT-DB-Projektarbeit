@@ -1,4 +1,8 @@
-$Server = 'DESKTOP-EJV4955\SQLEXPRESS'
+# Die nachfolgende Zeile muss mit Administratorenrechten installiert werden!
+# Install-Module -Name SqlServer -AllowClobber
+
+# $Server = 'DESKTOP-EJV4955\SQLEXPRESS'
+$Server = 'DESKTOP-VUM307Q\SQLEXPRESS'
 $Database = 'Corona'
 $File = 'file.csv'
 
@@ -16,4 +20,7 @@ $Credentials = New-Object System.Management.Automation.PSCredential -ArgumentLis
 Invoke-Sqlcmd -ServerInstance $Server -Database $Database -Query $Sql -Credential $Credentials -QueryTimeout 120 | Out-Null
 
 # Lesen mit dediziertem User von View --> nur Read rechte
+# 1 View: Daten gruppiert nach Kanton
 
+# 1 View: Daten gruppiert nach Datum für gesammte Schweiz
+# 1 View: Alle Kantone Alphabetisch --> für Schweizer View verwenden.
