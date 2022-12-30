@@ -78,8 +78,6 @@ GO
 -- grants
 
 -- Select Privileg erteilen
-GRANT SELECT ON Attribut TO ScriptingUser;
-GRANT SELECT ON AttributTyp TO ScriptingUser;
-GRANT SELECT ON CoronaDaten TO ScriptingUser;
-GRANT SELECT ON Datum TO ScriptingUser;
-GRANT SELECT ON Kanton TO ScriptingUser;
+GRANT SELECT ON usvGetCanton TO ScriptingUser;
+GRANT SELECT ON usvGetCantonData TO ScriptingUser;
+GRANT SELECT ON usvGetSwissData TO ScriptingUser;
