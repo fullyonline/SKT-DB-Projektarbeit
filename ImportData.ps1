@@ -20,7 +20,16 @@ $Credentials = New-Object System.Management.Automation.PSCredential -ArgumentLis
 Invoke-Sqlcmd -ServerInstance $Server -Database $Database -Query $Sql -Credential $Credentials -QueryTimeout 120 | Out-Null
 
 # Lesen mit dediziertem User von View --> nur Read rechte
+
+$Username = "ReadingUser"
+$Password = ConvertTo-SecureString "S1cheresJuventusPassw0rt" -AsPlainText -Force
+$Credentials = New-Object System.Management.Automation.PSCredential -ArgumentList ($Username, $Password)
 # 1 View: Daten gruppiert nach Kanton
+
+
+#Invoke-Sqlcmd -ServerInstance $Server -Database $Database -Query $Sql | Out-Null
+Invoke-Sqlcmd -ServerInstance $Server -Database $Database -Query "SELECT * FROM usvGetCanton;" -Credential $Credentials -QueryTimeout 120
 
 # 1 View: Daten gruppiert nach Datum für gesammte Schweiz
 # 1 View: Alle Kantone Alphabetisch --> für Schweizer View verwenden.
+
