@@ -34,25 +34,61 @@ function Get-CleanCantonUrl {
     $NeuerName = $NeuerName -replace "ä", "ae"
     $NeuerName = $NeuerName -replace "ü", "ue"
     $NeuerName = $NeuerName -replace "ö", "oe"
+    $NeuerName = $NeuerName -replace ".", ""
     $NeuerName = $NeuerName -replace " ", "_"
     return $NeuerName + '.html';
 }
 
 #Invoke-Sqlcmd -ServerInstance $Server -Database $Database -Query $Sql | Out-Null
 $Kantone = Invoke-Sqlcmd -ServerInstance $Server -Database $Database -Query "SELECT * FROM usvGetCanton ORDER BY Kantonname;" -Credential $Credentials
+$Kantone = $Kantone.ItemArray
 
 $Navigation = '<div style="display: flex; flex-direction: row; flex-wrap: wrap; justify-content: center;">' + "`n"
 Foreach ($Kanton in $Kantone) {
-    $Url = Get-CleanCantonUrl $Kanton.Item(0)
-    $Navigation += '<a style= "margin: 0.5rem;" href="' + $Url + '">' + $Kanton.Item(0) + '</a>' + "`n"
+    $Url = Get-CleanCantonUrl $Kanton
+    $Navigation += '<a style= "margin: 0.5rem;" href="' + $Url + '">' + $Kanton + '</a>' + "`n"
 }
 $Navigation += '<a style= "margin: 0.5rem;" href="Schweiz.html">Gesammte Schweiz</a>' + "`n"
 $Navigation += '</div>'
-
-Write-Host $Navigation
-
 # 1 View: Daten gruppiert nach Datum für gesammte Schweiz
+function Get-SwissData {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string[]]$Kantone,
+        [string]$Server,
+        [string]$Database,
+        [System.Management.Automation.PSCredential]$Credentials
+    )
+    $Positiv = [System.Collections.ArrayList]@()
+    $Verstorben = [System.Collections.ArrayList]@()
+    $Isoliert = [System.Collections.ArrayList]@()
+    $InQuarantäne = [System.Collections.ArrayList]@()    
 
+    $Data = Invoke-Sqlcmd -ServerInstance $Server -Database $Database -Query "SELECT * FROM usvGetSwissData ORDER BY Datum;" -Credential $Credentials
+    Foreach ($Row in $Data) {
+        $Datum = $Row.Item(4).ToString("dd.MM.yyyy")
+        $Positiv.Add([pscustomobject]@{
+                Datum = $Datum
+                Wert  = $Row.Item(0)
+            })
+        $Verstorben.Add([pscustomobject]@{
+                Datum = $Datum
+                Wert  = $Row.Item(1)
+            })
+        $Isoliert.Add([pscustomobject]@{
+                Datum = $Datum
+                Wert  = $Row.Item(2)
+            })
+        $InQuarantäne.Add([pscustomobject]@{
+                Datum = $Datum
+                Wert  = $Row.Item(3)
+            })
+    }
+
+}
+
+Get-SwissData -Kantone $Kantone -Server $Server -Database $Database -Credentials $Credentials
 
 # 1 View: Alle Kantone Alphabetisch --> für Schweizer View verwenden.
+
 
