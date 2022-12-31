@@ -28,7 +28,16 @@ $Credentials = New-Object System.Management.Automation.PSCredential -ArgumentLis
 
 
 #Invoke-Sqlcmd -ServerInstance $Server -Database $Database -Query $Sql | Out-Null
-Invoke-Sqlcmd -ServerInstance $Server -Database $Database -Query "SELECT * FROM usvGetCanton;" -Credential $Credentials -QueryTimeout 120
+$Kantone = Invoke-Sqlcmd -ServerInstance $Server -Database $Database -Query "SELECT * FROM usvGetCanton;" -Credential $Credentials -QueryTimeout 120
+
+$Navigation = '<div style="display: flex; flex-direction: row; flex-wrap: wrap; justify-content: center;">' + "`n"
+Foreach ($Kanton in $Kantone) {
+    $Navigation += '<a style= "margin: 0.5rem;" href="' + $Kanton.Item(0) + '.html">' + $Kanton.Item(0) + '</a>' + "`n"
+}
+$Navigation += '<a style= "margin: 0.5rem;" href="Schweiz.html">Gesammte Schweiz</a>' + "`n"
+$Navigation += '</div>'
+
+Write-Host $Navigation
 
 # 1 View: Daten gruppiert nach Datum für gesammte Schweiz
 # 1 View: Alle Kantone Alphabetisch --> für Schweizer View verwenden.
