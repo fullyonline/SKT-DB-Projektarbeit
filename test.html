@@ -1,0 +1,24 @@
+<script src="https://www.gstatic.com/charts/loader.js">
+</script>
+
+
+<div id="myChart" style="max-width:1600px; height:400px"></div>
+<script>
+    var positiv = [["Datum", "Fälle"], ["06.11.2021", 783620], ["07.11.2021", 884492], ["08.11.2021", 863455], ["09.11.2021", 866891], ["10.11.2021", 866203]]
+    function drawChart() {
+            // Set Data
+            var data = google.visualization.arrayToDataTable(positiv);
+            // Set Options
+            var options = {
+                title: '',
+                hAxis: { title: 'Datum' },
+                vAxis: { title: 'Anzahl' },
+                legend: 'none'
+            };
+            // Draw Chart
+            var chart = new google.visualization.LineChart(document.getElementById('myChart'));
+            chart.draw(data, options);
+        }
+        google.charts.load('current', { packages: ['corechart'] });
+        google.charts.setOnLoadCallback(drawChart);
+</script>
