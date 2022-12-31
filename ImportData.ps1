@@ -26,13 +26,25 @@ $Password = ConvertTo-SecureString "S1cheresJuventusPassw0rt" -AsPlainText -Forc
 $Credentials = New-Object System.Management.Automation.PSCredential -ArgumentList ($Username, $Password)
 # 1 View: Daten gruppiert nach Kanton
 
+function Get-CleanCantonUrl {
+    param(
+        [Parameter(Mandatory = $true)][string]$Kantonname
+    )
+    $NeuerName = $Kantonname.ToLower()
+    $NeuerName = $NeuerName -replace "ä", "ae"
+    $NeuerName = $NeuerName -replace "ü", "ue"
+    $NeuerName = $NeuerName -replace "ö", "oe"
+    $NeuerName = $NeuerName -replace " ", "_"
+    return $NeuerName + '.html';
+}
 
 #Invoke-Sqlcmd -ServerInstance $Server -Database $Database -Query $Sql | Out-Null
-$Kantone = Invoke-Sqlcmd -ServerInstance $Server -Database $Database -Query "SELECT * FROM usvGetCanton;" -Credential $Credentials -QueryTimeout 120
+$Kantone = Invoke-Sqlcmd -ServerInstance $Server -Database $Database -Query "SELECT * FROM usvGetCanton ORDER BY Kantonname;" -Credential $Credentials
 
 $Navigation = '<div style="display: flex; flex-direction: row; flex-wrap: wrap; justify-content: center;">' + "`n"
 Foreach ($Kanton in $Kantone) {
-    $Navigation += '<a style= "margin: 0.5rem;" href="' + $Kanton.Item(0) + '.html">' + $Kanton.Item(0) + '</a>' + "`n"
+    $Url = Get-CleanCantonUrl $Kanton.Item(0)
+    $Navigation += '<a style= "margin: 0.5rem;" href="' + $Url + '">' + $Kanton.Item(0) + '</a>' + "`n"
 }
 $Navigation += '<a style= "margin: 0.5rem;" href="Schweiz.html">Gesammte Schweiz</a>' + "`n"
 $Navigation += '</div>'
@@ -40,5 +52,7 @@ $Navigation += '</div>'
 Write-Host $Navigation
 
 # 1 View: Daten gruppiert nach Datum für gesammte Schweiz
+
+
 # 1 View: Alle Kantone Alphabetisch --> für Schweizer View verwenden.
 
