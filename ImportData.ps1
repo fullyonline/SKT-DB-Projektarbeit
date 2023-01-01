@@ -24,8 +24,6 @@ Invoke-Sqlcmd -ServerInstance $Server -Database $Database -Query $Sql -Credentia
 $Username = "ReadingUser"
 $Password = ConvertTo-SecureString "S1cheresJuventusPassw0rt" -AsPlainText -Force
 $Credentials = New-Object System.Management.Automation.PSCredential -ArgumentList ($Username, $Password)
-$Server = 'DESKTOP-VUM307Q\SQLEXPRESS'
-$Database = 'Corona'
 # 1 View: Daten gruppiert nach Kanton
 
 function Get-CleanCantonUrl {
