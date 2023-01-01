@@ -103,6 +103,10 @@ function Write-SwissData {
     $InQuarantaeneDatenVariabel = 'var quarantaene = [["Datum", "Isoliert"]'
     $InQuarantaeneDatenVariabel += $InQuarantaene | ForEach-Object { ',["' + $_.Datum + '",' + $_.Wert + ']' }
     $InQuarantaeneDatenVariabel += ']'
+
+    $KantoneHtml = '<ul>'
+    $KantoneHtml += $Kantone | ForEach-Object { "<li>$_</li>" }
+    $KantoneHtml += '</ul>'
     
     $FileInhalt = '<script src="https://www.gstatic.com/charts/loader.js">
     </script>
@@ -112,9 +116,19 @@ function Write-SwissData {
         <button id="btnIsoliert" style="margin: 0.5rem;">Isolierte Personen</button>
         <button id="btnQuarantaene" style="margin: 0.5rem;">Personmen in Quarantaene</button>
     </div>
-
     <div style="display: flex; flex-direction: row; flex-wrap: wrap; justify-content: center;">
         <div id="myChart" style="width:1800px; height:400px"></div>
+    </div>
+
+    <br/>
+    <br/>
+    
+    <div style="display: flex; flex-direction: row; flex-wrap: wrap; justify-content: center;">
+        <div>    
+            <p>Alle Daten sind aus den folgenden Kantonen:</p>
+            <br/>
+            ' + $KantoneHtml + '
+        </div>
     </div>
 
     <script>
