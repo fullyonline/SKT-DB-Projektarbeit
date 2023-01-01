@@ -21,7 +21,7 @@ RETURNS VARCHAR(100)
 AS 
 BEGIN
 	RETURN CASE
-		WHEN @ShortName = 'ZH' THEN 'Zürich'
+		WHEN @ShortName = 'ZH' THEN 'Zuerich'
 		WHEN @ShortName = 'BE' THEN 'Bern'
 		WHEN @ShortName = 'LU' THEN 'Luzern'
 		WHEN @ShortName = 'UR' THEN 'Uri'
@@ -38,7 +38,7 @@ BEGIN
 		WHEN @ShortName = 'AR' THEN 'Appenzell Ausserrhoden'
 		WHEN @ShortName = 'AI' THEN 'Appenzell Innerrhoden'
 		WHEN @ShortName = 'SG' THEN 'St. Gallen'
-		WHEN @ShortName = 'GR' THEN 'Graubünden'
+		WHEN @ShortName = 'GR' THEN 'Graubuenden'
 		WHEN @ShortName = 'AG' THEN 'Aargau'
 		WHEN @ShortName = 'TG' THEN 'Thurgau'
 		WHEN @ShortName = 'TI' THEN 'Tessin'
@@ -47,7 +47,7 @@ BEGIN
 		WHEN @ShortName = 'NE' THEN 'Neuenburg'
 		WHEN @ShortName = 'GE' THEN 'Genf'
 		WHEN @ShortName = 'JU' THEN 'Jura'
-		WHEN @ShortName = 'FL' THEN 'Fürstentum Liechtenstein'
+		WHEN @ShortName = 'FL' THEN 'Fuerstentum Liechtenstein'
 	END
 END
 GO
