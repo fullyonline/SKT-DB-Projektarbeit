@@ -12,15 +12,24 @@
 #>
 $NavigationFilePath = $PWD.Path + '.\navigation.html'
 
+function Get-HtmlNameFromKanton {
+    param(
+        [Parameter(Mandatory = $true, Position = 0)][string]$Name
+    )
+    $NewName = $Name.ToLower().Replace(".", "").Replace(" ", "_")
+    $NewName = $NewName + '.html';
+    Write-Verbose "Name: $Name"
+    Write-Verbose "NewName: $NewName"
+    $NewName
+}
+
 function Write-Navigation {
     param(
         [Parameter(Mandatory = $true, Position = 0)][string[]]$Kantone
     )
-
-    
     $Navigation = '<div style="display: flex; flex-direction: row; flex-wrap: wrap; justify-content: center;">' + "`n"
     Foreach ($Kanton in $Kantone) {
-        $Url = $Kanton + '.html'
+        $Url = Get-HtmlNameFromKanton $Kanton
         $Navigation += '<a style= "margin: 0.5rem;" href="' + $Url + '">' + $Kanton + '</a>' + "`n"
     }
     $Navigation += '<a style= "margin: 0.5rem;" href="schweiz.html">Gesammte Schweiz</a>' + "`n"
@@ -34,7 +43,6 @@ function Write-HtmlPage {
         [Parameter(Mandatory = $true, Position = 1)][string]$Filename
     )
     $Navbar = Get-Content -Path $NavigationFilePath
-    Write-Host $Navbar
     $Content = '<!doctype html>
     <html lang="de">
         <head>
@@ -54,7 +62,8 @@ function Write-SwissData {
     param(
         [Parameter(Mandatory = $true, Position = 0)][string]$Server,
         [Parameter(Mandatory = $true, Position = 1)][string]$Database,
-        [Parameter(Mandatory = $true, Position = 2)][System.Management.Automation.PSCredential]$Credentials
+        [Parameter(Mandatory = $true, Position = 2)][System.Management.Automation.PSCredential]$Credentials,
+        [Parameter(Mandatory = $true, Position = 3)][string[]]$Kantone
     )
     $Positiv = [System.Collections.ArrayList]@()
     $Verstorben = [System.Collections.ArrayList]@()
@@ -98,10 +107,10 @@ function Write-SwissData {
     $FileInhalt = '<script src="https://www.gstatic.com/charts/loader.js">
     </script>
     <div style="display: flex; flex-direction: row; flex-wrap: wrap; justify-content: center;">
-        <button id="btnPositiv" style="margin: 0.5rem;">Positive Fälle</button>
-        <button id="btnVerstorben" style="margin: 0.5rem;">Verstorbene Fälle</button>
+        <button id="btnPositiv" style="margin: 0.5rem;">Positive Faelle</button>
+        <button id="btnVerstorben" style="margin: 0.5rem;">Verstorbene Faelle</button>
         <button id="btnIsoliert" style="margin: 0.5rem;">Isolierte Personen</button>
-        <button id="btnQuarantaene" style="margin: 0.5rem;">Personmen in Quarantäne</button>
+        <button id="btnQuarantaene" style="margin: 0.5rem;">Personmen in Quarantaene</button>
     </div>
 
     <div style="display: flex; flex-direction: row; flex-wrap: wrap; justify-content: center;">
@@ -118,7 +127,7 @@ function Write-SwissData {
         var data = google.visualization.arrayToDataTable(positiv);
         // Set Options
         var options = {
-            title: "Anzahl Positiv Getestete Fälle",
+            title: "Anzahl Positiv Getestete Faelle",
             hAxis: { title: "Datum" },
             vAxis: { title: "Anzahl" },
             legend: "none"
@@ -160,7 +169,7 @@ function Write-SwissData {
         var data = google.visualization.arrayToDataTable(quarantaene);
         // Set Options
         var options = {
-            title: "Anzahl Personen in Quarantäne",
+            title: "Anzahl Personen in Quarantaene",
             hAxis: { title: "Datum" },
             vAxis: { title: "Anzahl" },
             legend: "none"
@@ -180,29 +189,4 @@ function Write-SwissData {
     </script>'
 
     Write-HtmlPage -Body $FileInhalt -Filename "schweiz.html"
-}
-
-
-$badBytes = [byte[]]@(0xC3, 0x80)
-$utf8Str = [System.Text.Encoding]::UTF8.GetString($badBytes)
-$bytes = [System.Text.Encoding]::ASCII.GetBytes('Write-Output "') + [byte[]]@(0xC3, 0x80) + [byte[]]@(0x22)
-$path = Join-Path ([System.IO.Path]::GetTempPath()) 'encodingtest.ps1'
-
-try {
-    [System.IO.File]::WriteAllBytes($path, $bytes)
-
-    switch (& $path) {
-        $utf8Str {
-            return 'UTF-8'
-            break
-        }
-
-        default {
-            return 'Windows-1252'
-            break
-        }
-    }
-}
-finally {
-    Remove-Item $path
 }

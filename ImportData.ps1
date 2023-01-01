@@ -24,24 +24,17 @@ Invoke-Sqlcmd -ServerInstance $Server -Database $Database -Query $Sql -Credentia
 $Username = "ReadingUser"
 $Password = ConvertTo-SecureString "S1cheresJuventusPassw0rt" -AsPlainText -Force
 $Credentials = New-Object System.Management.Automation.PSCredential -ArgumentList ($Username, $Password)
-$Server = 'DESKTOP-VUM307Q\SQLEXPRESS'
-$Database = 'Corona'
 # 1 View: Daten gruppiert nach Kanton
 #Invoke-Sqlcmd -ServerInstance $Server -Database $Database -Query $Sql | Out-Null
 $Kantone = Invoke-Sqlcmd -ServerInstance $Server -Database $Database -Query "SELECT * FROM usvGetCanton ORDER BY Kantonname;" -Credential $Credentials
 $Kantone = $Kantone.ItemArray
 
-
 Import-Module .\HtmlHelperModule.psm1 -Force
-
-# Achtung: Dies funktioniert bei mir aus unerklärlichen Gründen nicht, wenn der Replace in einem Modul ist
-# Die Umlaute werden nicht ersetzt!
-$UrlKantone = $Kantone | ForEach-Object { $_.ToLower().Replace("ä", "ae").Replace("ü", "ue").Replace("ö", "oe").Replace(".", "").Replace(" ", "_") }
 # Navigation für weitere .html-File generierung schreiben
-Write-Navigation $UrlKantone
+Write-Navigation $Kantone
 
 # Daten über die Schweiz zusammenfassen
-Write-SwissData -Server $Server -Database $Database -Credentials $Credentials
+Write-SwissData -Server $Server -Database $Database -Credentials $Credentials -Kantone $Kantone
 
 # Alle Kantone schreiben
 
