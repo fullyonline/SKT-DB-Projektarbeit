@@ -261,12 +261,10 @@ function Write-CantonData {
         $InQuarantaeneDatenVariabel += $Canton.Value.InQuarantaene | ForEach-Object { ',["' + $_.Datum + '",' + $_.Wert + ']' }
         $InQuarantaeneDatenVariabel += ']'
 
-        $KantoneHtml = '<h1>' + $Canton.Name + '</h1>' 
-
         $FileInhalt = '<script src="https://www.gstatic.com/charts/loader.js">
         </script>
         <div style="display: flex; flex-direction: row; flex-wrap: wrap; justify-content: center;">
-        ' + $KantoneHtml + '
+        <h1>' + $Canton.Name + '</h1>
         </div>
         <div style="display: flex; flex-direction: row; flex-wrap: wrap; justify-content: center;">
             <button id="btnPositiv" style="margin: 0.5rem;">Positive Faelle</button>
@@ -279,81 +277,95 @@ function Write-CantonData {
         </div>
 
         <br/>
-        <br/>'
-
-        $FileInhalt += '<script>
-        ' + $PositivDatenVariabel + ';
-        ' + $VerstorbenDatenVariabel + ';
-        ' + $IsoliertDatenVariabel + ';
-        ' + $InQuarantaeneDatenVariabel + ';
-        function drawPositivChart() {
-            // Set Data
-            var data = google.visualization.arrayToDataTable(positiv);
-            // Set Options
-            var options = {
-                title: "Anzahl Positiv Getestete Faelle",
-                hAxis: { title: "Datum" },
-                vAxis: { title: "Anzahl" },
-                legend: "none"
-            };
-            // Draw Chart
-            var chart = new google.visualization.LineChart(document.getElementById("myChart"));
-            chart.draw(data, options);
-        }
-        function drawVerstorbenChart() {
-            // Set Data
-            var data = google.visualization.arrayToDataTable(verstorben);
-            // Set Options
-            var options = {
-                title: "Anzahl Verstorbene Personen",
-                hAxis: { title: "Datum" },
-                vAxis: { title: "Anzahl" },
-                legend: "none"
-            };
-            // Draw Chart
-            var chart = new google.visualization.LineChart(document.getElementById("myChart"));
-            chart.draw(data, options);
-        }
-        function drawIsoliertChart() {
-            // Set Data
-            var data = google.visualization.arrayToDataTable(isoliert);
-            // Set Options
-            var options = {
-                title: "Anzahl isolierte Personen",
-                hAxis: { title: "Datum" },
-                vAxis: { title: "Anzahl" },
-                legend: "none"
-            };
-            // Draw Chart
-            var chart = new google.visualization.LineChart(document.getElementById("myChart"));
-            chart.draw(data, options);
-        }
-        function drawQuarantaeneChart() {
-            // Set Data
-            var data = google.visualization.arrayToDataTable(quarantaene);
-            // Set Options
-            var options = {
-                title: "Anzahl Personen in Quarantaene",
-                hAxis: { title: "Datum" },
-                vAxis: { title: "Anzahl" },
-                legend: "none"
-            };
-            // Draw Chart
-            var chart = new google.visualization.LineChart(document.getElementById("myChart"));
-            chart.draw(data, options);
-        }
-        google.charts.load("current", { packages: ["corechart"] });
-        google.charts.setOnLoadCallback(drawPositivChart);
-
-        document.getElementById("btnPositiv").addEventListener("click", drawPositivChart);
-        document.getElementById("btnVerstorben").addEventListener("click", drawVerstorbenChart);    
-        document.getElementById("btnIsoliert").addEventListener("click", drawIsoliertChart);
-        document.getElementById("btnQuarantaene").addEventListener("click", drawQuarantaeneChart);
-
-        </script>'
-
+        <br/>
         
+        '
+
+        $FileInhalt += Get-Javascript -PositivDaten $PositivDatenVariabel -VerstorbenDaten $VerstorbenDatenVariabel -IsoliertDaten $IsoliertDatenVariabel -InQuarantaeneDaten $InQuarantaeneDatenVariabel
+
         $HtmlName = Get-HtmlNameFromKanton $Canton.Name
         Write-HtmlPage -Body $FileInhalt -Filename $HtmlName
     }
+}
+
+function Get-Javascript {
+    param(
+        [Parameter(Mandatory = $true, Position = 0)][string]$PositivDaten,
+        [Parameter(Mandatory = $true, Position = 1)][string]$VerstorbenDaten,
+        [Parameter(Mandatory = $true, Position = 2)][string]$IsoliertDaten,
+        [Parameter(Mandatory = $true, Position = 3)][string]$InQuarantaeneDaten
+    )
+    
+    $JavascriptCode = '<script>
+    ' + $PositivDatenVariabel + ';
+    ' + $VerstorbenDatenVariabel + ';
+    ' + $IsoliertDatenVariabel + ';
+    ' + $InQuarantaeneDatenVariabel + ';
+    function drawPositivChart() {
+        // Set Data
+        var data = google.visualization.arrayToDataTable(positiv);
+        // Set Options
+        var options = {
+            title: "Anzahl Positiv Getestete Faelle",
+            hAxis: { title: "Datum" },
+            vAxis: { title: "Anzahl" },
+            legend: "none"
+        };
+        // Draw Chart
+        var chart = new google.visualization.LineChart(document.getElementById("myChart"));
+        chart.draw(data, options);
+    }
+    function drawVerstorbenChart() {
+        // Set Data
+        var data = google.visualization.arrayToDataTable(verstorben);
+        // Set Options
+        var options = {
+            title: "Anzahl Verstorbene Personen",
+            hAxis: { title: "Datum" },
+            vAxis: { title: "Anzahl" },
+            legend: "none"
+        };
+        // Draw Chart
+        var chart = new google.visualization.LineChart(document.getElementById("myChart"));
+        chart.draw(data, options);
+    }
+    function drawIsoliertChart() {
+        // Set Data
+        var data = google.visualization.arrayToDataTable(isoliert);
+        // Set Options
+        var options = {
+            title: "Anzahl isolierte Personen",
+            hAxis: { title: "Datum" },
+            vAxis: { title: "Anzahl" },
+            legend: "none"
+        };
+        // Draw Chart
+        var chart = new google.visualization.LineChart(document.getElementById("myChart"));
+        chart.draw(data, options);
+    }
+    function drawQuarantaeneChart() {
+        // Set Data
+        var data = google.visualization.arrayToDataTable(quarantaene);
+        // Set Options
+        var options = {
+            title: "Anzahl Personen in Quarantaene",
+            hAxis: { title: "Datum" },
+            vAxis: { title: "Anzahl" },
+            legend: "none"
+        };
+        // Draw Chart
+        var chart = new google.visualization.LineChart(document.getElementById("myChart"));
+        chart.draw(data, options);
+    }
+    google.charts.load("current", { packages: ["corechart"] });
+    google.charts.setOnLoadCallback(drawPositivChart);
+
+    document.getElementById("btnPositiv").addEventListener("click", drawPositivChart);
+    document.getElementById("btnVerstorben").addEventListener("click", drawVerstorbenChart);    
+    document.getElementById("btnIsoliert").addEventListener("click", drawIsoliertChart);
+    document.getElementById("btnQuarantaene").addEventListener("click", drawQuarantaeneChart);
+
+    </script>'
+
+    $JavascriptCode
 }
