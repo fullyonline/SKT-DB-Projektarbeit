@@ -34,7 +34,7 @@ function Write-Navigation {
     }
     $Navigation += '<a style= "margin: 0.5rem;" href="schweiz.html">Gesammte Schweiz</a>' + "`n"
     $Navigation += '</div>'
-    $Navigation | Out-File -FilePath $NavigationFilePath
+    $Navigation | Out-File -FilePath $NavigationFilePath -Encoding utf8
 }
 
 function Write-HtmlPage {    
@@ -55,7 +55,7 @@ function Write-HtmlPage {
         </body>
     </html>'
     $FilePath = $PWD.Path + "\" + $Filename
-    $Content | Out-File -FilePath $FilePath
+    $Content | Out-File -FilePath $FilePath -Encoding utf8
 }
 
 function Write-SwissData {
@@ -249,16 +249,16 @@ function Write-CantonData {
 
     Foreach ($Canton in $CantonData.GetEnumerator()) {
         $PositivDatenVariabel = 'var positiv = [["Datum", "Positive Tests"]'
-        $PositivDatenVariabel += $Canton.Value.Positiv | ForEach-Object { ',["' + $_.Datum + '",' + $_.Wert + ']' }
+        $PositivDatenVariabel += $Canton.Value.Positiv | ForEach-Object { ',["' + $_.Datum + '",' + $(If($_.Wert -is [DBNull]) {'null'} Else {$_.Wert}) + ']' }
         $PositivDatenVariabel += ']'
         $VerstorbenDatenVariabel = 'var verstorben = [["Datum", "Verstorben"]'
-        $VerstorbenDatenVariabel += $Canton.Value.Verstorben | ForEach-Object { ',["' + $_.Datum + '",' + $_.Wert + ']' }
+        $VerstorbenDatenVariabel += $Canton.Value.Verstorben | ForEach-Object { ',["' + $_.Datum + '",' + $(If($_.Wert -is [DBNull]) {'null'} Else {$_.Wert}) + ']' }
         $VerstorbenDatenVariabel += ']'
         $IsoliertDatenVariabel = 'var isoliert = [["Datum", "Isoliert"]'
-        $IsoliertDatenVariabel += $Canton.Value.Isoliert | ForEach-Object { ',["' + $_.Datum + '",' + $_.Wert + ']' }
+        $IsoliertDatenVariabel += $Canton.Value.Isoliert | ForEach-Object { ',["' + $_.Datum + '",' + $(If($_.Wert -is [DBNull]) {'null'} Else {$_.Wert}) + ']' }
         $IsoliertDatenVariabel += ']'
-        $InQuarantaeneDatenVariabel = 'var quarantaene = [["Datum", "Isoliert"]'
-        $InQuarantaeneDatenVariabel += $Canton.Value.InQuarantaene | ForEach-Object { ',["' + $_.Datum + '",' + $_.Wert + ']' }
+        $InQuarantaeneDatenVariabel = 'var quarantaene = [["Datum", "In Quarantaene"]'
+        $InQuarantaeneDatenVariabel += $Canton.Value.InQuarantaene | ForEach-Object { ',["' + $_.Datum + '",' + $(If($_.Wert -is [DBNull]) {'null'} Else {$_.Wert}) + ']' }
         $InQuarantaeneDatenVariabel += ']'
 
         $FileInhalt = '<script src="https://www.gstatic.com/charts/loader.js">
