@@ -37,5 +37,6 @@ Write-Navigation $Kantone
 Write-SwissData -Server $Server -Database $Database -Credentials $Credentials -Kantone $Kantone
 
 # Alle Kantone schreiben
+Write-CantonData -Server $Server -Database $Database -Credentials $Credentials -Kantone $Kantone
 
 
