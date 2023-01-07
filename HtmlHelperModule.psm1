@@ -33,6 +33,9 @@ function Write-Navigation {
     }
     $Navigation += '<a style= "margin: 0.5rem;" href="schweiz.html">Gesammte Schweiz</a>' + "`n"
     $Navigation += '</div>'
+
+    Write-Verbose "Writing Navigation to $NavigationFilePath with -Encoding utf8 and Content:"
+    Write-Verbose  $Navigation
     $Navigation | Out-File -FilePath $NavigationFilePath -Encoding utf8
 }
 
@@ -66,6 +69,8 @@ function Write-HtmlPage {
         </body>
     </html>'
     $FilePath = $PWD.Path + "\" + $Filename
+    Write-Verbose "Writing $FilePath with -Encoding utf8 and Content:"
+    Write-Verbose  $Content
     $Content | Out-File -FilePath $FilePath -Encoding utf8
 }
 
@@ -104,19 +109,19 @@ function Write-SwissData {
         $Positiv.Add([pscustomobject]@{
                 Datum = $Datum
                 Wert  = $Row.Item(0)
-            })
+            }) | Write-Verbose | Out-Null
         $Verstorben.Add([pscustomobject]@{
                 Datum = $Datum
                 Wert  = $Row.Item(1)
-            })
+            }) | Write-Verbose | Out-Null
         $Isoliert.Add([pscustomobject]@{
                 Datum = $Datum
                 Wert  = $Row.Item(2)
-            })
+            }) | Write-Verbose | Out-Null
         $InQuarantaene.Add([pscustomobject]@{
                 Datum = $Datum
                 Wert  = $Row.Item(3)
-            })
+            }) | Write-Verbose | Out-Null
 
     }
     $PositivDatenVariabel = 'var positiv = [["Datum", "Positive Tests"]'
@@ -277,19 +282,19 @@ function Write-CantonData {
         $CurrentCanton.Positiv.Add([pscustomobject]@{
                 Datum = $Datum
                 Wert  = $Row.Item(2)
-            }) | Out-Null
+            })  | Write-Verbose | Out-Null
         $CurrentCanton.Verstorben.Add([pscustomobject]@{
                 Datum = $Datum
                 Wert  = $Row.Item(3)
-            }) | Out-Null
+            }) | Write-Verbose | Out-Null
         $CurrentCanton.Isoliert.Add([pscustomobject]@{
                 Datum = $Datum
                 Wert  = $Row.Item(4)
-            }) | Out-Null
+            }) | Write-Verbose | Out-Null
         $CurrentCanton.InQuarantaene.Add([pscustomobject]@{
                 Datum = $Datum
                 Wert  = $Row.Item(5)
-            }) | Out-Null
+            }) | Write-Verbose | Out-Null
 
     }
 
@@ -329,7 +334,7 @@ function Write-CantonData {
 
         $FileInhalt += Get-Javascript -PositivDaten $PositivDatenVariabel -VerstorbenDaten $VerstorbenDatenVariabel -IsoliertDaten $IsoliertDatenVariabel -InQuarantaeneDaten $InQuarantaeneDatenVariabel
 
-        $HtmlName = Get-HtmlNameFromKanton $Canton.Name
+        $HtmlName = Get-HtmlNameFromKanton $Canton.Name        
         Write-HtmlPage -Body $FileInhalt -Filename $HtmlName
     }
 }
@@ -431,3 +436,5 @@ function Get-Javascript {
 
     $JavascriptCode
 }
+
+Write-Verbose "Module HtmlHelperModule.psm1 erfolgreich importiert"
