@@ -1,15 +1,3 @@
-<#
- .Synopsis
-
- .Description
-
- .Parameter Kantonname
-
- .Example
-
- .Example
- 
-#>
 $NavigationFilePath = $PWD.Path + '.\navigation.html'
 
 function Get-HtmlNameFromKanton {
@@ -23,6 +11,17 @@ function Get-HtmlNameFromKanton {
     $NewName
 }
 
+<#
+ .Synopsis
+  Schreibt die Navigation in eine .html Datei
+ .Description
+  Schreibt die Navigation in eine .html Datei, 
+  welche beim Schreiben weiterer Datein gelesen und eingebunden wird.
+ .Parameter Kantone
+  Ein Array aller Kantone
+ .Example
+  Write-Navigation "Zug", "Bern" 
+#>
 function Write-Navigation {
     param(
         [Parameter(Mandatory = $true, Position = 0)][string[]]$Kantone
@@ -37,7 +36,19 @@ function Write-Navigation {
     $Navigation | Out-File -FilePath $NavigationFilePath -Encoding utf8
 }
 
-function Write-HtmlPage {    
+<#
+ .Synopsis
+  Schreibt eine .html Datei
+ .Description
+  Schreibt eine .html Datei inklusive vorherig erstellter Navigation.
+ .Parameter Body
+  Das inner html der html Datei.
+ .Parameter Filename
+  Der Filename der zu erstellenden html Datei.
+ .Example
+  Write-HtmlPage -Body "<div><p>Ein Paragraph</p></div>" -Filename "Test.html"
+#>
+function Write-HtmlPage {
     param(
         [Parameter(Mandatory = $true, Position = 0)][string]$Body,
         [Parameter(Mandatory = $true, Position = 1)][string]$Filename
@@ -58,6 +69,23 @@ function Write-HtmlPage {
     $Content | Out-File -FilePath $FilePath -Encoding utf8
 }
 
+<#
+ .Synopsis
+  Liest die Daten der Schweiz aus und schreibt diese in "schweiz.html"
+ .Description
+  Liest die Daten der Schweiz aus der Datenbank aus und schreibt diese in "schweiz.html"
+ .Parameter Server
+  Der Server, bei welchem die Daten gelesen werden sollen.
+ .Parameter Database
+  Die Datenbank, in welcher die Daten gelesen werden sollen.
+ .Parameter Credentials
+  Die Credentials des Users, welcher die Daten lesen wird.
+ .Parameter Kantone
+  Die Kantone, welche sich in der Datenbank befinden.
+ .Example
+  $Credentials = New-Object System.Management.Automation.PSCredential -ArgumentList ("Username", "Password")
+  Write-SwissData -Server "LOKALER_SERVER" -Database "Corona" -Credentials $Credentials -Kantone "Zug", "Bern"
+#>
 function Write-SwissData {
     param(
         [Parameter(Mandatory = $true, Position = 0)][string]$Server,
@@ -205,6 +233,24 @@ function Write-SwissData {
     Write-HtmlPage -Body $FileInhalt -Filename "schweiz.html"
 }
 
+<#
+ .Synopsis
+  Liest die Daten der Schweiz gruppiert in Kantone aus und schreibt diese in html Dateien.
+ .Description
+  Liest die Daten der Schweiz gruppiert in Kantone aus und schreibt diese in html Dateien.
+  Die html Dateien werden nach dem Schema <kanton>.html erzeugt.
+ .Parameter Server
+  Der Server, bei welchem die Daten gelesen werden sollen.
+ .Parameter Database
+  Die Datenbank, in welcher die Daten gelesen werden sollen.
+ .Parameter Credentials
+  Die Credentials des Users, welcher die Daten lesen wird.
+ .Parameter Kantone
+  Die Kantone, welche sich in der Datenbank befinden.
+ .Example
+  $Credentials = New-Object System.Management.Automation.PSCredential -ArgumentList ("Username", "Password")
+  Write-CantonData -Server "LOKALER_SERVER" -Database "Corona" -Credentials $Credentials -Kantone "Zug", "Bern"
+#>
 function Write-CantonData {
     param(
         [Parameter(Mandatory = $true, Position = 0)][string]$Server,
@@ -216,9 +262,9 @@ function Write-CantonData {
     $CantonData = @{}
     Foreach ($Kanton in $Kantone) {
         $CantonData[$Kanton] = [pscustomobject]@{
-            Positiv = [System.Collections.ArrayList]@()
-            Verstorben = [System.Collections.ArrayList]@()
-            Isoliert = [System.Collections.ArrayList]@()
+            Positiv       = [System.Collections.ArrayList]@()
+            Verstorben    = [System.Collections.ArrayList]@()
+            Isoliert      = [System.Collections.ArrayList]@()
             InQuarantaene = [System.Collections.ArrayList]@()
         }
     }
@@ -249,16 +295,16 @@ function Write-CantonData {
 
     Foreach ($Canton in $CantonData.GetEnumerator()) {
         $PositivDatenVariabel = 'var positiv = [["Datum", "Positive Tests"]'
-        $PositivDatenVariabel += $Canton.Value.Positiv | ForEach-Object { ',["' + $_.Datum + '",' + $(If($_.Wert -is [DBNull]) {'null'} Else {$_.Wert}) + ']' }
+        $PositivDatenVariabel += $Canton.Value.Positiv | ForEach-Object { ',["' + $_.Datum + '",' + $(If ($_.Wert -is [DBNull]) { 'null' } Else { $_.Wert }) + ']' }
         $PositivDatenVariabel += ']'
         $VerstorbenDatenVariabel = 'var verstorben = [["Datum", "Verstorben"]'
-        $VerstorbenDatenVariabel += $Canton.Value.Verstorben | ForEach-Object { ',["' + $_.Datum + '",' + $(If($_.Wert -is [DBNull]) {'null'} Else {$_.Wert}) + ']' }
+        $VerstorbenDatenVariabel += $Canton.Value.Verstorben | ForEach-Object { ',["' + $_.Datum + '",' + $(If ($_.Wert -is [DBNull]) { 'null' } Else { $_.Wert }) + ']' }
         $VerstorbenDatenVariabel += ']'
         $IsoliertDatenVariabel = 'var isoliert = [["Datum", "Isoliert"]'
-        $IsoliertDatenVariabel += $Canton.Value.Isoliert | ForEach-Object { ',["' + $_.Datum + '",' + $(If($_.Wert -is [DBNull]) {'null'} Else {$_.Wert}) + ']' }
+        $IsoliertDatenVariabel += $Canton.Value.Isoliert | ForEach-Object { ',["' + $_.Datum + '",' + $(If ($_.Wert -is [DBNull]) { 'null' } Else { $_.Wert }) + ']' }
         $IsoliertDatenVariabel += ']'
         $InQuarantaeneDatenVariabel = 'var quarantaene = [["Datum", "In Quarantaene"]'
-        $InQuarantaeneDatenVariabel += $Canton.Value.InQuarantaene | ForEach-Object { ',["' + $_.Datum + '",' + $(If($_.Wert -is [DBNull]) {'null'} Else {$_.Wert}) + ']' }
+        $InQuarantaeneDatenVariabel += $Canton.Value.InQuarantaene | ForEach-Object { ',["' + $_.Datum + '",' + $(If ($_.Wert -is [DBNull]) { 'null' } Else { $_.Wert }) + ']' }
         $InQuarantaeneDatenVariabel += ']'
 
         $FileInhalt = '<script src="https://www.gstatic.com/charts/loader.js">
@@ -288,6 +334,22 @@ function Write-CantonData {
     }
 }
 
+<#
+ .Synopsis
+  Liefert das Javascript für die einzelnen Kantone für Funktion Write-CantonData zurück.
+ .Description
+  Liefert das Javascript für die einzelnen Kantone für Funktion Write-CantonData zurück.
+ .Parameter PositivDaten
+  Die Daten der positiven Fälle der Kantones.
+ .Parameter VerstorbenDaten
+  Die Daten der verstorbenen Personen des Kantones.
+ .Parameter IsoliertDaten
+  Die Daten der isolierten Personen des Kantones.
+ .Parameter InQuarantaeneDaten
+  Die Daten der Personen, welche sich in Quarantäne befinden, des Kantones.
+ .Example
+  Get-Javascript -PositivDaten "'var positiv = [["Datum", "Positive Tests"], ['30.07.2022', 1143]]'" -VerstorbenDaten "'var verstorben = [["Datum", "Verstorben"], ['30.07.2022', 1143]]'" -IsoliertDaten "'var isoliert = [["Datum", "Isoliert"], ['30.07.2022', 1143]]'" -InQuarantaeneDaten "'var quarantaene = [["Datum", "In Quarantaene"], ['30.07.2022', 1143]]'"
+#>
 function Get-Javascript {
     param(
         [Parameter(Mandatory = $true, Position = 0)][string]$PositivDaten,
