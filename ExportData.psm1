@@ -4,11 +4,11 @@
  .Description
   Laded die Daten aus der Datenbank mit einem Dedizierten User und erstellt html Dateien.
  .Parameter Server
-  Der Servername, in welchen importiert werden soll.
+  Der Servername, aus welchem exportiert werden soll.
  .Parameter Database
-  Die Datenbank, in welche importiert werden soll.
+  Die Datenbank, aus welcher exportiert werden soll.
  .Example
-  Import-Data -Server 'DESKTOP-VUM307Q\SQLEXPRESS' -Database 'Corona'
+  Export-Data -Server 'DESKTOP-VUM307Q\SQLEXPRESS' -Database 'Corona'
 #>
 function Export-Data {
     param(
