@@ -1,5 +1,19 @@
-$NavigationFilePath = $PWD.Path + '.\navigation.html'
+$NavigationFilePath = $PWD.Path + '\View\navigation.html'
 
+<#
+ .Synopsis
+  Gibt den html-Namen eines Kantones zurück
+ .Description
+  Gibt den html-Namen eines Kantones zurück.
+ .Parameter Name
+  Der Name des Kantones
+ .Example
+  # gibt den Rückgabewert: "zug.html"
+  Get-HtmlNameFromKanton "Zug"
+ .Example
+ # gibt den Rückgabewert: "bern.html"
+ Get-HtmlNameFromKanton "Bern"
+#>
 function Get-HtmlNameFromKanton {
     param(
         [Parameter(Mandatory = $true, Position = 0)][string]$Name
@@ -68,7 +82,7 @@ function Write-HtmlPage {
             ' + $Body + '
         </body>
     </html>'
-    $FilePath = $PWD.Path + "\" + $Filename
+    $FilePath = $PWD.Path + "\View\" + $Filename
     Write-Verbose "Writing $FilePath with -Encoding utf8 and Content:"
     Write-Verbose  $Content
     $Content | Out-File -FilePath $FilePath -Encoding utf8
